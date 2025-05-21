@@ -1,17 +1,23 @@
 name: Report Pipeline Status
 
 on:
+  push:
+    branches:
+      - dev
   workflow_call:
     inputs:
       success:
         required: true
         type: boolean
+        default: true
       image_repo:
         required: true
         type: string
+        default: test-repo-name
       image_tag:
         required: true
         type: string
+        default: dev
 
 jobs:
   report:
