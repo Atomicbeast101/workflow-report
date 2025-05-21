@@ -1,0 +1,40 @@
+name: Report Pipeline Status
+
+on:
+  workflow_call:
+    inputs:
+      success:
+        required: true
+        type: boolean
+      image_repo:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+
+jobs:
+  report:
+    name: Report
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - name: Report of Success
+        if: ${{ inputs.success == true }}
+        uses: umahmood/pushover-actions@main
+        env:
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+        with:
+          title: Gitea DevOps
+          message: ✅ Released ${{ inputs.image_repo }}:${{ inputs.image_tag }} app!
+
+      - name: Report of Failure
+        if: ${{ inputs.success == false }}
+        uses: umahmood/pushover-actions@main
+        env:
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+        with:
+          title: Gitea DevOps
+          message: ❌ Unable to release ${{ inputs.image_repo }}:${{ inputs.image_tag }} app!
